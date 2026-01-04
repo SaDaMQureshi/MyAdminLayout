@@ -3,6 +3,8 @@
 body {
   background: #f2f5f8;
   margin: 0;
+  padding: 0;
+  box-sizing: border-box;
   font-family: 'Poppins', sans-serif;
 }
 
@@ -222,7 +224,7 @@ body {
 
 
 /* Dashboard Kit Style  */
-.card-box:hover{
+.card-box:hover {
   transform: translateY(-10px);
   transition: all .5s;
 }
