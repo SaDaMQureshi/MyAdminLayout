@@ -1,0 +1,1796 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Enterprise Analytics | Secure Portal</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Lexend+Deca:wght@400;700&display=swap"
+        rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"
+        rel="stylesheet" />
+
+    <style>
+        :root {
+            --office-accent: #132589;
+            --sidebar-width: 260px;
+            --sidebar-bg: #ffffff;
+            --navbar-height: 70px;
+            --bg-body: #f8fafc;
+            --border-color: #e2e8f0;
+            --text-main: #475569;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            background-color: var(--bg-body);
+            font-family: "Inter", sans-serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        /* --- Sidebar --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            z-index: 1040;
+            transition: var(--transition);
+        }
+
+        .sidebar-header {
+            height: var(--navbar-height);
+            display: flex;
+            align-items: center;
+            padding: 0 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .sidebar-header h4 {
+            font-family: 'Lexend Deca';
+            font-weight: 700;
+            margin: 0;
+            color: var(--office-accent);
+            font-size: 1.25rem;
+        }
+
+        .nav-wrapper {
+            padding: 1rem 0;
+            height: calc(100vh - var(--navbar-height));
+            overflow-y: auto;
+        }
+
+        .nav-label {
+            padding: 0.5rem 1.5rem;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            color: #94a3b8;
+        }
+
+        .nav-link-custom {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .nav-link-custom i:first-child {
+            width: 20px;
+            margin-right: 12px;
+            font-size: 1.1rem;
+        }
+
+        .nav-link-custom .arrow {
+            margin-left: auto;
+            font-size: 0.7rem;
+            transition: transform 0.3s;
+        }
+
+        /* RESTORED: Hover and Active Text/BG Shift */
+        .nav-link-custom:hover {
+            background: #f1f5f9;
+            color: var(--office-accent);
+        }
+
+        .nav-link-custom.active {
+            background: #eef2ff;
+            color: var(--office-accent);
+            border-right: 3px solid var(--office-accent);
+        }
+
+        .submenu {
+            list-style: none;
+            padding: 0 0 0 3.2rem;
+            display: none;
+            background: #fcfdfe;
+        }
+
+        .submenu li a {
+            padding: 0.5rem 0;
+            display: block;
+            color: #64748b;
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+
+        .submenu li a:hover {
+            color: var(--office-accent);
+        }
+
+        /* --- Navbar & Profile --- */
+        .top-navbar {
+            height: var(--navbar-height);
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: var(--sidebar-width);
+            background: #ffffff;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            padding: 0 1.5rem;
+            z-index: 1030;
+            transition: var(--transition);
+        }
+
+        #digital-clock {
+            font-family: 'Lexend Deca';
+            font-weight: 600;
+            color: var(--office-accent);
+            background: #f1f5f9;
+            padding: 6px 15px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+        }
+
+        .profile-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+
+        .avatar-sm {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /* --- Table Components --- */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            margin-top: var(--navbar-height);
+            padding: 2rem;
+            transition: var(--transition);
+        }
+
+        .table-container {
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .status-pill {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .active-pill {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        /* RESTORED: Original Search Filter Style */
+        .dataTables_wrapper .dataTables_filter input {
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 5px 12px;
+            margin-left: 10px;
+        }
+
+        /* RESTORED: Original Pagination/Info Styling */
+        .dataTables_wrapper .dataTables_paginate .paginate_button.page-item.active .page-link {
+            background-color: var(--office-accent) !important;
+            border-color: var(--office-accent) !important;
+            color: white !important;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .page-link {
+            border-radius: 8px !important;
+            margin: 0 2px;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+        }
+
+        .dataTables_info {
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+
+        /* Custom scrollbar for sidebar */
+        .nav-wrapper::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .nav-wrapper::-webkit-scrollbar-track {
+            background: #f8fafc;
+        }
+
+        .nav-wrapper::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 2px;
+        }
+
+        .nav-wrapper::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Custom override for Radio/Checkbox to match your Accent Color */
+        .form-check-input:checked {
+            background-color: var(--office-accent);
+            border-color: var(--office-accent);
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--office-accent);
+            box-shadow: 0 0 0 3px rgba(19, 37, 137, 0.1);
+        }
+
+        .modern-placeholder {
+            overflow: hidden;
+            /* Ensures shimmer doesn't spill out */
+        }
+
+        .skeleton-shimmer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.6) 50%, rgba(255, 255, 255, 0) 100%);
+            animation: shimmer 1.8s infinite;
+        }
+
+        /* --- Select2 Custom Styling --- */
+        .select2-container--bootstrap-5 .select2-selection {
+            border-color: var(--border-color) !important;
+            border-radius: 8px !important;
+            min-height: 41px !important;
+            /* Matches your py-2 inputs */
+            display: flex !important;
+            align-items: center !important;
+            box-shadow: none !important;
+        }
+
+        /* Focus state */
+        .select2-container--bootstrap-5.select2-container--focus .select2-selection,
+        .select2-container--bootstrap-5.select2-container--open .select2-selection {
+            border-color: var(--office-accent) !important;
+            box-shadow: 0 0 0 3px rgba(19, 37, 137, 0.1) !important;
+        }
+
+        /* Dropdown styling */
+        .select2-container--bootstrap-5 .select2-dropdown {
+            border-color: var(--border-color) !important;
+            border-radius: 8px !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+            overflow: hidden;
+        }
+
+        /* Result item hover/active */
+        .select2-container--bootstrap-5 .select2-results__option--highlighted[aria-selected] {
+            background-color: var(--office-accent) !important;
+            color: #fff !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-results__option {
+            font-size: 0.85rem;
+            padding: 8px 12px !important;
+        }
+
+        /* Search field inside dropdown */
+        .select2-search__field {
+            border-radius: 6px !important;
+            border: 1px solid var(--border-color) !important;
+        }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                left: calc(var(--sidebar-width) * -1);
+            }
+
+            .top-navbar {
+                left: 0;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            body.sidebar-open .sidebar {
+                left: 0;
+            }
+
+            body.sidebar-open .sidebar-overlay {
+                content: '';
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 1035;
+            }
+        }
+
+
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+
+        /* Calendar Grid Layout */
+        .calendar-grid-compact {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            text-align: center;
+        }
+
+        .cal-head {
+            font-size: 0.65rem;
+            font-weight: 800;
+            color: #94a3b8;
+            padding-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .cal-day {
+            font-size: 0.75rem;
+            padding: 10px 0;
+            border-radius: 6px;
+            cursor: default;
+            color: #64748b;
+            transition: all 0.2s;
+        }
+
+        /* Highlight for today's date */
+        .cal-day.today {
+            color: #132589;
+            font-weight: 800;
+            background: #eef2ff;
+            border: 1px solid rgba(19, 37, 137, 0.1);
+        }
+
+        /* Custom scrollbar for the notepad if it overflows */
+        #unifiedNotepad::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #unifiedNotepad::-webkit-scrollbar-thumb {
+            background: #e2e8f0;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h4>ENT-INTEL</h4>
+        </div>
+        <div class="nav-wrapper">
+            <a href="#" class="nav-link-custom active" onclick="selectMenuItem(this)"><i
+                    class="fas fa-th-large"></i><span>Dashboard</span></a>
+            <div>
+                <a href="javascript:void(0)" class="nav-link-custom has-submenu" onclick="toggleSubmenu(this)">
+                    <i class="fas fa-users"></i><span>Personnel</span><i class="fas fa-chevron-right arrow"></i>
+                </a>
+                <ul class="submenu">
+                    <li><a href="#">Staff List</a></li>
+                    <li><a href="#">Departments</a></li>
+                    <li><a href="#">Roles & Permissions</a></li>
+                </ul>
+            </div>
+            <div>
+                <a href="javascript:void(0)" class="nav-link-custom has-submenu" onclick="toggleSubmenu(this)">
+                    <i class="fas fa-chart-line"></i><span>Analytics</span><i class="fas fa-chevron-right arrow"></i>
+                </a>
+                <ul class="submenu">
+                    <li><a href="#">Reports</a></li>
+                    <li><a href="#">Metrics</a></li>
+                    <li><a href="#">Insights</a></li>
+                </ul>
+            </div>
+            <a href="#" class="nav-link-custom" onclick="selectMenuItem(this)"><i
+                    class="fas fa-project-diagram"></i><span>Projects</span></a>
+            <a href="#" class="nav-link-custom" onclick="selectMenuItem(this)"><i
+                    class="fas fa-calendar-alt"></i><span>Schedule</span></a>
+
+            <div>
+                <a href="javascript:void(0)" class="nav-link-custom has-submenu" onclick="toggleSubmenu(this)">
+                    <i class="fas fa-file-alt"></i><span>Documents</span><i class="fas fa-chevron-right arrow"></i>
+                </a>
+                <ul class="submenu">
+                    <li><a href="#">All Files</a></li>
+                    <li><a href="#">Shared</a></li>
+                    <li><a href="#">Archives</a></li>
+                </ul>
+            </div>
+            <a href="#" class="nav-link-custom" onclick="selectMenuItem(this)"><i
+                    class="fas fa-envelope"></i><span>Messages</span></a>
+            <a href="#" class="nav-link-custom" onclick="selectMenuItem(this)"><i
+                    class="fas fa-bell"></i><span>Notifications</span></a>
+
+            <div>
+                <a href="javascript:void(0)" class="nav-link-custom has-submenu" onclick="toggleSubmenu(this)">
+                    <i class="fas fa-dollar-sign"></i><span>Budget</span><i class="fas fa-chevron-right arrow"></i>
+                </a>
+                <ul class="submenu">
+                    <li><a href="#">Overview</a></li>
+                    <li><a href="#">Expenses</a></li>
+                    <li><a href="#">Revenue</a></li>
+                </ul>
+            </div>
+            <a href="#" class="nav-link-custom" onclick="selectMenuItem(this)"><i
+                    class="fas fa-receipt"></i><span>Invoices</span></a>
+
+            <a href="#" class="nav-link-custom" onclick="selectMenuItem(this)"><i
+                    class="fas fa-cog"></i><span>Settings</span></a>
+            <a href="#" class="nav-link-custom" onclick="selectMenuItem(this)"><i
+                    class="fas fa-shield-alt"></i><span>Security</span></a>
+            <a href="#" class="nav-link-custom" onclick="selectMenuItem(this)"><i
+                    class="fas fa-question-circle"></i><span>Help Center</span></a>
+        </div>
+    </aside>
+
+    <!-- navbar section -->
+    <nav class="top-navbar">
+        <button class="btn btn-light d-lg-none me-3" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+        <div id="digital-clock">00:00:00 AM</div>
+        <div class="ms-auto d-flex align-items-center">
+            <div class="dropdown">
+                <div class="profile-section dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    <div class="text-end d-none d-sm-block">
+                        <div class="fw-bold text-dark mb-0" style="font-size: 0.85rem;">Admin User</div>
+                        <div class="text-muted" style="font-size: 0.7rem;">Super Admin</div>
+                    </div>
+                    <img src="https://ui-avatars.com/api/?name=Sadam+Qureshi&background=132589&color=fff"
+                        class="avatar-sm">
+                </div>
+                <ul class="dropdown-menu dropdown-menu-end shadow border-0 p-2">
+                    <li><a class="dropdown-item rounded" href="#"><i class="fas fa-user-circle me-2"></i>Profile</a>
+                    </li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li><a class="dropdown-item text-danger rounded" href="#"><i
+                                class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+
+        <!-- Page detail section -->
+        <div class="page-header d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="h3 fw-bold text-dark mb-0" style="font-family: 'Lexend Deca'">Staff Intel Dashboard</h1>
+                <p class="text-muted small">Viewing current active personnel.</p>
+            </div>
+        </div>
+
+        <!-- Table Section -->
+        <div class="table-container p-3">
+            <table id="mainTable" class="table table-hover dt-responsive nowrap w-100">
+                <thead>
+                    <tr>
+                        <th>Ref</th>
+                        <th>Personnel</th>
+                        <th>Office</th>
+                        <th>Status</th>
+                        <th>Salary</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="fw-bold">#992</span></td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div>
+                                    <div class="fw-semibold text-dark">Sadam Qureshi</div>
+                                    <div class="small text-muted">Lead Systems Arch</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>Karachi, PK</td>
+                        <td><span class="status-pill active-pill">Active</span></td>
+                        <td><span class="fw-bold">$75,000</span></td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-light btn-sm border" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit
+                                            Profile</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-file-invoice me-2"></i>View
+                                            Payroll</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item text-danger" href="#"><i
+                                                class="fas fa-trash me-2"></i>Terminate</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="fw-bold">#992</span></td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div>
+                                    <div class="fw-semibold text-dark">Sadam Qureshi</div>
+                                    <div class="small text-muted">Lead Systems Arch</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>Karachi, PK</td>
+                        <td><span class="status-pill active-pill">Active</span></td>
+                        <td><span class="fw-bold">$75,000</span></td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-light btn-sm border" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit
+                                            Profile</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-file-invoice me-2"></i>View
+                                            Payroll</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item text-danger" href="#"><i
+                                                class="fas fa-trash me-2"></i>Terminate</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="fw-bold">#992</span></td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div>
+                                    <div class="fw-semibold text-dark">Sadam Qureshi</div>
+                                    <div class="small text-muted">Lead Systems Arch</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>Karachi, PK</td>
+                        <td><span class="status-pill active-pill">Active</span></td>
+                        <td><span class="fw-bold">$75,000</span></td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-light btn-sm border" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit
+                                            Profile</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-file-invoice me-2"></i>View
+                                            Payroll</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item text-danger" href="#"><i
+                                                class="fas fa-trash me-2"></i>Terminate</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="fw-bold">#992</span></td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div>
+                                    <div class="fw-semibold text-dark">Sadam Qureshi</div>
+                                    <div class="small text-muted">Lead Systems Arch</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>Karachi, PK</td>
+                        <td><span class="status-pill active-pill">Active</span></td>
+                        <td><span class="fw-bold">$75,000</span></td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-light btn-sm border" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit
+                                            Profile</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-file-invoice me-2"></i>View
+                                            Payroll</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item text-danger" href="#"><i
+                                                class="fas fa-trash me-2"></i>Terminate</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="fw-bold">#992</span></td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div>
+                                    <div class="fw-semibold text-dark">Sadam Qureshi</div>
+                                    <div class="small text-muted">Lead Systems Arch</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>Karachi, PK</td>
+                        <td><span class="status-pill active-pill">Active</span></td>
+                        <td><span class="fw-bold">$75,000</span></td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-light btn-sm border" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit
+                                            Profile</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-file-invoice me-2"></i>View
+                                            Payroll</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item text-danger" href="#"><i
+                                                class="fas fa-trash me-2"></i>Terminate</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="fw-bold">#992</span></td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div>
+                                    <div class="fw-semibold text-dark">Sadam Qureshi</div>
+                                    <div class="small text-muted">Lead Systems Arch</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>Karachi, PK</td>
+                        <td><span class="status-pill active-pill">Active</span></td>
+                        <td><span class="fw-bold">$75,000</span></td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-light btn-sm border" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit
+                                            Profile</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-file-invoice me-2"></i>View
+                                            Payroll</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item text-danger" href="#"><i
+                                                class="fas fa-trash me-2"></i>Terminate</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="fw-bold">#992</span></td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div>
+                                    <div class="fw-semibold text-dark">Sadam Qureshi</div>
+                                    <div class="small text-muted">Lead Systems Arch</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>Karachi, PK</td>
+                        <td><span class="status-pill active-pill">Active</span></td>
+                        <td><span class="fw-bold">$75,000</span></td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-light btn-sm border" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit
+                                            Profile</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-file-invoice me-2"></i>View
+                                            Payroll</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item text-danger" href="#"><i
+                                                class="fas fa-trash me-2"></i>Terminate</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="fw-bold">#992</span></td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div>
+                                    <div class="fw-semibold text-dark">Sadam Qureshi</div>
+                                    <div class="small text-muted">Lead Systems Arch</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>Karachi, PK</td>
+                        <td><span class="status-pill active-pill">Active</span></td>
+                        <td><span class="fw-bold">$75,000</span></td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-light btn-sm border" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit
+                                            Profile</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-file-invoice me-2"></i>View
+                                            Payroll</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item text-danger" href="#"><i
+                                                class="fas fa-trash me-2"></i>Terminate</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="fw-bold">#992</span></td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div>
+                                    <div class="fw-semibold text-dark">Sadam Qureshi</div>
+                                    <div class="small text-muted">Lead Systems Arch</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>Karachi, PK</td>
+                        <td><span class="status-pill active-pill">Active</span></td>
+                        <td><span class="fw-bold">$75,000</span></td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-light btn-sm border" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit
+                                            Profile</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-file-invoice me-2"></i>View
+                                            Payroll</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item text-danger" href="#"><i
+                                                class="fas fa-trash me-2"></i>Terminate</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="fw-bold">#992</span></td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div>
+                                    <div class="fw-semibold text-dark">Sadam Qureshi</div>
+                                    <div class="small text-muted">Lead Systems Arch</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>Karachi, PK</td>
+                        <td><span class="status-pill active-pill">Active</span></td>
+                        <td><span class="fw-bold">$75,000</span></td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-light btn-sm border" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit
+                                            Profile</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-file-invoice me-2"></i>View
+                                            Payroll</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item text-danger" href="#"><i
+                                                class="fas fa-trash me-2"></i>Terminate</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="fw-bold">#992</span></td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div>
+                                    <div class="fw-semibold text-dark">Sadam Qureshi</div>
+                                    <div class="small text-muted">Lead Systems Arch</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>Karachi, PK</td>
+                        <td><span class="status-pill active-pill">Active</span></td>
+                        <td><span class="fw-bold">$75,000</span></td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-light btn-sm border" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit
+                                            Profile</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-file-invoice me-2"></i>View
+                                            Payroll</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item text-danger" href="#"><i
+                                                class="fas fa-trash me-2"></i>Terminate</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="fw-bold">#992</span></td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div>
+                                    <div class="fw-semibold text-dark">Sadam Qureshi</div>
+                                    <div class="small text-muted">Lead Systems Arch</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>Karachi, PK</td>
+                        <td><span class="status-pill active-pill">Active</span></td>
+                        <td><span class="fw-bold">$75,000</span></td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-light btn-sm border" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit
+                                            Profile</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-file-invoice me-2"></i>View
+                                            Payroll</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item text-danger" href="#"><i
+                                                class="fas fa-trash me-2"></i>Terminate</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="fw-bold">#992</span></td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div>
+                                    <div class="fw-semibold text-dark">Sadam Qureshi</div>
+                                    <div class="small text-muted">Lead Systems Arch</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>Karachi, PK</td>
+                        <td><span class="status-pill active-pill">Active</span></td>
+                        <td><span class="fw-bold">$75,000</span></td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-light btn-sm border" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit
+                                            Profile</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-file-invoice me-2"></i>View
+                                            Payroll</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item text-danger" href="#"><i
+                                                class="fas fa-trash me-2"></i>Terminate</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="fw-bold">#992</span></td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div>
+                                    <div class="fw-semibold text-dark">Sadam Qureshi</div>
+                                    <div class="small text-muted">Lead Systems Arch</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>Karachi, PK</td>
+                        <td><span class="status-pill active-pill">Active</span></td>
+                        <td><span class="fw-bold">$75,000</span></td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-light btn-sm border" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit
+                                            Profile</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-file-invoice me-2"></i>View
+                                            Payroll</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item text-danger" href="#"><i
+                                                class="fas fa-trash me-2"></i>Terminate</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="fw-bold">#992</span></td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div>
+                                    <div class="fw-semibold text-dark">Sadam Qureshi</div>
+                                    <div class="small text-muted">Lead Systems Arch</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>Karachi, PK</td>
+                        <td><span class="status-pill active-pill">Active</span></td>
+                        <td><span class="fw-bold">$75,000</span></td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-light btn-sm border" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit
+                                            Profile</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-file-invoice me-2"></i>View
+                                            Payroll</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item text-danger" href="#"><i
+                                                class="fas fa-trash me-2"></i>Terminate</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="fw-bold">#992</span></td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div>
+                                    <div class="fw-semibold text-dark">Sadam Qureshi</div>
+                                    <div class="small text-muted">Lead Systems Arch</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>Karachi, PK</td>
+                        <td><span class="status-pill active-pill">Active</span></td>
+                        <td><span class="fw-bold">$75,000</span></td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-light btn-sm border" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit
+                                            Profile</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-file-invoice me-2"></i>View
+                                            Payroll</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item text-danger" href="#"><i
+                                                class="fas fa-trash me-2"></i>Terminate</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="fw-bold">#992</span></td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div>
+                                    <div class="fw-semibold text-dark">Sadam Qureshi</div>
+                                    <div class="small text-muted">Lead Systems Arch</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>Karachi, PK</td>
+                        <td><span class="status-pill active-pill">Active</span></td>
+                        <td><span class="fw-bold">$75,000</span></td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-light btn-sm border" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit
+                                            Profile</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-file-invoice me-2"></i>View
+                                            Payroll</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item text-danger" href="#"><i
+                                                class="fas fa-trash me-2"></i>Terminate</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="fw-bold">#992</span></td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div>
+                                    <div class="fw-semibold text-dark">Sadam Qureshi</div>
+                                    <div class="small text-muted">Lead Systems Arch</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>Karachi, PK</td>
+                        <td><span class="status-pill active-pill">Active</span></td>
+                        <td><span class="fw-bold">$75,000</span></td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-light btn-sm border" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit
+                                            Profile</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-file-invoice me-2"></i>View
+                                            Payroll</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item text-danger" href="#"><i
+                                                class="fas fa-trash me-2"></i>Terminate</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="fw-bold">#992</span></td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div>
+                                    <div class="fw-semibold text-dark">Sadam Qureshi</div>
+                                    <div class="small text-muted">Lead Systems Arch</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>Karachi, PK</td>
+                        <td><span class="status-pill active-pill">Active</span></td>
+                        <td><span class="fw-bold">$75,000</span></td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-light btn-sm border" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit
+                                            Profile</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-file-invoice me-2"></i>View
+                                            Payroll</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item text-danger" href="#"><i
+                                                class="fas fa-trash me-2"></i>Terminate</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="fw-bold">#992</span></td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div>
+                                    <div class="fw-semibold text-dark">Sadam Qureshi</div>
+                                    <div class="small text-muted">Lead Systems Arch</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>Karachi, PK</td>
+                        <td><span class="status-pill active-pill">Active</span></td>
+                        <td><span class="fw-bold">$75,000</span></td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-light btn-sm border" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit
+                                            Profile</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-file-invoice me-2"></i>View
+                                            Payroll</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item text-danger" href="#"><i
+                                                class="fas fa-trash me-2"></i>Terminate</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="fw-bold">#992</span></td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div>
+                                    <div class="fw-semibold text-dark">Sadam Qureshi</div>
+                                    <div class="small text-muted">Lead Systems Arch</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>Karachi, PK</td>
+                        <td><span class="status-pill active-pill">Active</span></td>
+                        <td><span class="fw-bold">$75,000</span></td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-light btn-sm border" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit
+                                            Profile</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-file-invoice me-2"></i>View
+                                            Payroll</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item text-danger" href="#"><i
+                                                class="fas fa-trash me-2"></i>Terminate</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Form Fields Section -->
+        <div class="mt-4">
+            <div class="table-container p-4">
+                <div class="mb-4">
+                    <h5 class="fw-bold text-dark" style="font-family: 'Lexend Deca'">Personnel Configuration</h5>
+                    <p class="text-muted small">Fill in the details to update the enterprise record.</p>
+                </div>
+
+                <form>
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold text-dark">Full Name</label>
+                            <input type="text" class="form-control shadow-none py-2" placeholder="e.g. Sadam Qureshi"
+                                style="border-color: var(--border-color); font-size: 0.9rem;">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold text-dark">Department</label>
+                            <select class="select-bar" name="department">
+                                <option selected disabled>Choose Department...</option>
+                                <option>Systems Architecture</option>
+                                <option>Network Security</option>
+                                <option>Cloud Operations</option>
+                                <option>Human Resources</option>
+                                <option>Financial Analytics</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold text-dark">Joining Date</label>
+                            <input type="date" class="form-control shadow-none py-2"
+                                style="border-color: var(--border-color); font-size: 0.9rem;">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold text-dark">Identification Document
+                                (PDF/PNG)</label>
+                            <input type="file" class="form-control shadow-none"
+                                style="border-color: var(--border-color); font-size: 0.9rem;">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold text-dark d-block">Employment Type</label>
+                            <div class="d-flex gap-3 mt-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="empType" id="fullTime" checked>
+                                    <label class="form-check-label small" for="fullTime">Full-Time</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="empType" id="contract">
+                                    <label class="form-check-label small" for="contract">Contract</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold text-dark d-block">System Access</label>
+                            <div class="form-check mt-2">
+                                <input class="form-check-input" type="checkbox" id="adminAccess">
+                                <label class="form-check-label small" for="adminAccess">Grant Administrative
+                                    Privileges</label>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label small fw-semibold text-dark">Internal Remarks / Biography</label>
+                            <textarea class="form-control shadow-none" rows="4"
+                                placeholder="Enter detailed notes here..."
+                                style="border-color: var(--border-color); font-size: 0.9rem;"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-3 border-top d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-light px-4 py-2 fw-semibold"
+                            style="border-radius: 8px; font-size: 0.85rem; border: 1px solid var(--border-color);">
+                            Discard
+                        </button>
+                        <button type="submit" class="btn px-4 py-2 fw-semibold"
+                            style="background-color: var(--office-accent); color: white; border-radius: 8px; font-size: 0.85rem;">
+                            Update Record
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Image Section -->
+        <div class="mt-4 mb-5">
+            <div class="table-container p-4">
+                <div class="mb-4">
+                    <h5 class="fw-bold text-dark" style="font-family: 'Lexend Deca'">Image Component Styles</h5>
+                    <p class="text-muted small">Standardized image shapes used throughout the enterprise portal.</p>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-6 col-md-3 text-center">
+                        <label class="form-label small fw-semibold text-dark mb-3 d-block">Round Profile</label>
+                        <img src="https://ui-avatars.com/api/?name=Sadam+Qureshi&background=132589&color=fff&size=150"
+                            alt="Round Profile" class="img-fluid rounded-circle border p-1 shadow-sm"
+                            style="width: 130px; height: 130px; object-fit: cover; border-color: var(--border-color) !important;">
+                    </div>
+
+                    <div class="col-6 col-md-3 text-center">
+                        <label class="form-label small fw-semibold text-dark mb-3 d-block">Square Avatar</label>
+                        <img src="https://ui-avatars.com/api/?name=Admin+User&background=6366f1&color=fff&size=150"
+                            alt="Square Avatar" class="img-fluid rounded-3 border shadow-sm"
+                            style="width: 130px; height: 130px; object-fit: cover; border-color: var(--border-color) !important;">
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label class="form-label small fw-semibold text-dark mb-3 d-block">Landscape Banner /
+                            Header</label>
+                        <div class="border rounded-3 p-1 shadow-sm"
+                            style="border-color: var(--border-color) !important;">
+                            <img src="https://images.pexels.com/photos/3183183/pexels-photo-3183183.jpeg?auto=compress&cs=tinysrgb&w=800&h=300"
+                                alt="Landscape Banner" class="img-fluid rounded"
+                                style="width: 100%; height: 130px; object-fit: cover;">
+                        </div>
+                    </div>
+
+                    <div class="col-6 col-md-3 mt-md-5">
+                        <label class="form-label small fw-semibold text-dark mb-3 d-block">Thumbnail with Action</label>
+                        <div class="position-relative border rounded p-1 shadow-sm"
+                            style="width: 120px; border-color: var(--border-color) !important;">
+                            <img id="thumbnail-img"
+                                src="https://ui-avatars.com/api/?name=Company+Logo&background=f1f5f9&color=132589&size=120"
+                                alt="Thumbnail" class="img-fluid rounded"
+                                style="width: 110px; height: 110px; object-fit: cover;">
+                            <input type="file" id="thumbnail-upload" accept="image/*" style="display: none;">
+                            <button type="button" onclick="document.getElementById('thumbnail-upload').click()"
+                                class="btn btn-sm position-absolute top-0 start-100 translate-middle rounded-circle p-1"
+                                style="background-color: var(--office-accent); width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; color: white;">
+                                <i class="fas fa-upload small" style="font-size: 0.7rem;"></i>
+                            </button>
+                        </div>
+                    </div>
+
+
+                    <div class="col-6 col-md-3 mt-md-5 text-center">
+                        <label class="form-label small fw-semibold text-dark mb-3 d-block">Skeleton Placeholder</label>
+                        <div class="modern-placeholder rounded-3 bg-light border shadow-sm p-3 position-relative"
+                            style="width: 130px; height: 130px; margin: 0 auto; border-color: var(--border-color) !important;">
+                            <i class="fas fa-image fa-3x text-muted" style="opacity: 0.3; padding-top: 20px;"></i>
+                            <div class="skeleton-shimmer"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Section -->
+        <div class="mt-4 mb-5">
+            <div class="table-container overflow-hidden">
+
+                <div class="profile-banner position-relative"
+                    style="height: 140px; background: linear-gradient(135deg, var(--office-accent) 0%, #1e293b 100%);">
+                    <div class="position-absolute w-100 h-100"
+                        style="opacity: 0.05; background-image: linear-gradient(45deg, #fff 25%, transparent 25%, transparent 50%, #fff 50%, #fff 75%, transparent 75%, transparent); background-size: 40px 40px;">
+                    </div>
+                </div>
+
+                <div class="px-4 pb-4">
+                    <div class="d-flex align-items-start" style="margin-top: -45px;">
+                        <div class="position-relative">
+                            <img src="https://ui-avatars.com/api/?name=Sadam+Qureshi&background=fff&color=132589&size=200"
+                                alt="User Profile" class="rounded-circle border border-4 border-white shadow-sm"
+                                style="width: 110px; height: 110px; object-fit: cover;">
+                        </div>
+
+                        <div class="ms-4 mt-5 pt-2 flex-grow-1">
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <h4 class="fw-bold text-dark mb-0" style="font-family: 'Lexend Deca'">Sadam Qureshi</h4>
+                                <span class="badge rounded-pill"
+                                    style="background-color: rgba(19, 37, 137, 0.1); color: var(--office-accent); font-size: 0.65rem;">ID:
+                                    #99201</span>
+                            </div>
+                            <p class="text-muted mb-0" style="font-size: 0.9rem;">Lead Systems Architect • Enterprise
+                                Solutions Division</p>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4 pt-4 border-top g-3">
+                        <div class="col-sm-6 col-md-3">
+                            <div class="p-3 rounded-3 bg-light border-start border-4"
+                                style="border-color: var(--office-accent) !important;">
+                                <div class="text-muted small mb-1">Email Address</div>
+                                <div class="fw-semibold text-dark small">s.qureshi@enterprise.com</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <div class="p-3 rounded-3 bg-light">
+                                <div class="text-muted small mb-1">Office Location</div>
+                                <div class="fw-semibold text-dark small">Karachi Headquarters</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <div class="p-3 rounded-3 bg-light">
+                                <div class="text-muted small mb-1">Direct Extension</div>
+                                <div class="fw-semibold text-dark small">+92 21-3990-11</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <div class="p-3 rounded-3 bg-light">
+                                <div class="text-muted small mb-1">Employment Status</div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="rounded-circle"
+                                        style="width: 8px; height: 8px; background-color: #22c55e;"></span>
+                                    <span class="fw-semibold text-dark small">Permanent Full-Time</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <label class="form-label small fw-bold text-dark"
+                            style="font-family: 'Lexend Deca'">Professional Summary</label>
+                        <p class="text-muted mb-0" style="font-size: 0.85rem; line-height: 1.6;">
+                            Specializing in high-availability systems architecture and secure cloud infrastructure.
+                            Responsible for overseeing the core technical operations and ensuring 99.9% uptime across
+                            all enterprise nodes within the Pakistan region.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div class="mt-4 mb-5">
+            <div class="row g-4">
+
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="table-container p-4 h-100">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="rounded-3 p-3 border"
+                                style="background: #f8fafc; color: var(--office-accent); border-color: var(--border-color) !important;">
+                                <i class="fas fa-users-cog fa-lg"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <h6 class="text-muted small fw-semibold mb-1"
+                                style="font-family: 'Lexend Deca'; text-transform: uppercase; letter-spacing: 0.5px;">
+                                Active Personnel</h6>
+                            <h3 class="fw-bold text-dark mb-0 counter" data-target="1284">0</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="table-container p-4 h-100">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="rounded-3 p-3 border"
+                                style="background: #f8fafc; color: #0ea5e9; border-color: var(--border-color) !important;">
+                                <i class="fas fa-wallet fa-lg"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <h6 class="text-muted small fw-semibold mb-1"
+                                style="font-family: 'Lexend Deca'; text-transform: uppercase; letter-spacing: 0.5px;">
+                                Total Payroll ($)</h6>
+                            <h3 class="fw-bold text-dark mb-0 counter" data-target="425200">0</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="table-container p-4 h-100">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="rounded-3 p-3 border"
+                                style="background: #f8fafc; color: #22c55e; border-color: var(--border-color) !important;">
+                                <i class="fas fa-server fa-lg"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <h6 class="text-muted small fw-semibold mb-1"
+                                style="font-family: 'Lexend Deca'; text-transform: uppercase; letter-spacing: 0.5px;">
+                                Uptime Hours</h6>
+                            <h3 class="fw-bold text-dark mb-0 counter" data-target="8760">0</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="table-container p-4 h-100">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="rounded-3 p-3 border"
+                                style="background: #f8fafc; color: #f59e0b; border-color: var(--border-color) !important;">
+                                <i class="fas fa-exclamation-triangle fa-lg"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <h6 class="text-muted small fw-semibold mb-1"
+                                style="font-family: 'Lexend Deca'; text-transform: uppercase; letter-spacing: 0.5px;">
+                                Pending Tasks</h6>
+                            <h3 class="fw-bold text-dark mb-0 counter" data-target="14">0</h3>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Calander and Notes Section -->
+        <div class="row g-4">
+            <div class="col-xl-4 col-lg-5">
+                <div class="table-container p-3" style="height: 380px;">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="fw-bold text-dark mb-0" style="font-family: 'Lexend Deca'">Calendar</h6>
+                        <div class="d-flex gap-1">
+                            <button class="btn btn-xs btn-light border p-1 px-2" onclick="changeMonth(-1)"><i
+                                    class="fas fa-chevron-left fa-xs"></i></button>
+                            <button class="btn btn-xs btn-light border p-1 px-2" onclick="changeMonth(1)"><i
+                                    class="fas fa-chevron-right fa-xs"></i></button>
+                        </div>
+                    </div>
+                    <div id="currentMonthYear" class="small fw-bold text-center mb-2 text-primary"
+                        style="color: var(--office-accent) !important;"></div>
+                    <div id="calendarGrid" class="calendar-grid-compact">
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-8 col-lg-7">
+                <div class="table-container p-3 d-flex flex-column" style="height: 380px;">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="fw-bold text-dark mb-0" style="font-family: 'Lexend Deca'">Global Notepad</h6>
+                        <button class="btn btn-sm btn-outline-danger" onclick="clearNotes()"
+                            style="font-size: 0.75rem; border-radius: 6px; padding: 2px 10px;">
+                            <i class="fas fa-trash-alt me-1"></i> Clear All
+                        </button>
+                    </div>
+
+                    <div class="flex-grow-1">
+                        <textarea id="unifiedNotepad" class="form-control h-100 shadow-none border-0 bg-light p-3"
+                            placeholder="Start typing your notes here... (Content auto-saves)"
+                            style="font-size: 0.9rem; color: #475569; resize: none; border-radius: 8px;"
+                            oninput="saveToCookies(this.value)"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sweet Alert Notifications -->
+        <div class="table-container p-4 mt-4">
+            <h6 class="fw-bold mb-3" style="font-family: 'Lexend Deca'">System Notifications</h6>
+            <div class="d-flex flex-wrap gap-2">
+                <button class="btn btn-success btn-sm"
+                    onclick="Toast.fire({icon:'success', title:'Signed in successfully'})">Success</button>
+                <button class="btn btn-danger btn-sm"
+                    onclick="Toast.fire({icon:'error', title:'Server connection lost'})">Danger</button>
+                <button class="btn btn-warning btn-sm"
+                    onclick="Toast.fire({icon:'warning', title:'Storage almost full'})">Warning</button>
+                <button class="btn btn-info btn-sm text-white"
+                    onclick="Toast.fire({icon:'info', title:'New message received'})">Info</button>
+                <button class="btn btn-sm" style="background: var(--office-accent); color: white;"
+                    onclick="showPrimaryToast('Processing request...')">Primary</button>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script>
+        function toggleSidebar() { document.body.classList.toggle('sidebar-open'); }
+
+        // RESTORED: Original toggleSubmenu logic
+        function toggleSubmenu(el) {
+            const submenu = $(el).next('.submenu');
+            const arrow = $(el).find('.arrow');
+            $('.submenu').not(submenu).slideUp(300).prev().find('.arrow').css('transform', 'rotate(0deg)');
+            submenu.slideToggle(300);
+            const isVisible = submenu.is(':visible');
+            arrow.css('transform', isVisible ? 'rotate(90deg)' : 'rotate(0deg)');
+
+            // Also select the submenu item when toggled
+            selectMenuItem(el);
+        }
+
+        // Function to handle menu item selection
+        function selectMenuItem(el) {
+            // Remove active class from all menu items
+            $('.nav-link-custom').removeClass('active');
+            // Add active class to clicked item
+            $(el).addClass('active');
+        }
+
+        function updateClock() {
+            const now = new Date();
+            let h = now.getHours(), m = now.getMinutes(), s = now.getSeconds(), ampm = h >= 12 ? 'PM' : 'AM';
+            h = h % 12 || 12; m = m < 10 ? '0' + m : m; s = s < 10 ? '0' + s : s;
+            document.getElementById('digital-clock').innerHTML = `${h}:${m}:${s} ${ampm}`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        $(document).ready(function () {
+            $("#mainTable").DataTable({
+                dom: '<"d-flex justify-content-between align-items-center mb-3"lf>rt<"d-flex justify-content-between align-items-center mt-3"ip>',
+                language: {
+                    search: "",
+                    searchPlaceholder: "Search records...",
+                    paginate: {
+                        next: '<i class="fas fa-chevron-right"></i>',
+                        previous: '<i class="fas fa-chevron-left"></i>'
+                    }
+                }
+            });
+
+            // Restore basic search styling without overwriting the border
+            $('.dataTables_filter input').addClass('form-control shadow-none');
+            $('.dataTables_length select').addClass('form-select shadow-none');
+
+            // Thumbnail file upload handler
+            document.getElementById('thumbnail-upload').addEventListener('change', function (e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        document.getElementById('thumbnail-img').src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            $('.select-bar').select2({
+                theme: 'bootstrap-5',
+                width: '100%',
+                placeholder: 'Choose...',
+                allowClear: false,
+                dropdownParent: $('.main-content') // Ensures dropdown scrolls with content
+            });
+        });
+
+
+        // ############ Dashboard Counts ################
+
+        document.querySelectorAll('.counter').forEach(counter => {
+            const updateCount = () => {
+                const target = +counter.getAttribute('data-target');
+                const count = +counter.innerText;
+                const speed = 200; // Lower is faster
+                const inc = target / speed;
+
+                if (count < target) {
+                    counter.innerText = Math.ceil(count + inc);
+                    setTimeout(updateCount, 1);
+                } else {
+                    counter.innerText = target.toLocaleString(); // Adds commas to large numbers
+                }
+            };
+            updateCount();
+        });
+
+        // ############ End Dashboard Counts ################
+
+
+        // ##################### Calander and Notes #######################
+        let currentCalDate = new Date();
+
+        // 1. Render the Calendar
+        function renderCompactCalendar() {
+            const grid = document.getElementById('calendarGrid');
+            const label = document.getElementById('currentMonthYear');
+            if (!grid || !label) return;
+
+            grid.innerHTML = "";
+            label.innerText = currentCalDate.toLocaleString('default', { month: 'long', year: 'numeric' });
+
+            // Add Weekday Headers
+            ['S', 'M', 'T', 'W', 'T', 'F', 'S'].forEach(d => {
+                grid.innerHTML += `<div class="cal-head">${d}</div>`;
+            });
+
+            const month = currentCalDate.getMonth();
+            const year = currentCalDate.getFullYear();
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            // Fill empty slots for previous month days
+            for (let i = 0; i < firstDay; i++) {
+                grid.innerHTML += `<div></div>`;
+            }
+
+            // Fill actual days
+            for (let i = 1; i <= daysInMonth; i++) {
+                const isToday = new Date().toDateString() === new Date(year, month, i).toDateString() ? 'today' : '';
+                grid.innerHTML += `<div class="cal-day ${isToday}">${i}</div>`;
+            }
+        }
+
+        // 2. Change Month Navigation
+        function changeMonth(dir) {
+            currentCalDate.setMonth(currentCalDate.getMonth() + dir);
+            renderCompactCalendar();
+        }
+
+        // 3. Cookie Storage Logic for Notepad
+        function saveToCookies(val) {
+            const date = new Date();
+            date.setTime(date.getTime() + (30 * 24 * 60 * 60 * 1000)); // 30 Days expiry
+            document.cookie = `ent_portal_notes=${encodeURIComponent(val)};expires=${date.toUTCString()};path=/`;
+        }
+
+        function loadNotesFromCookies() {
+            const notepad = document.getElementById('unifiedNotepad');
+            const match = document.cookie.match(new RegExp('(^| )ent_portal_notes=([^;]+)'));
+            if (match && notepad) {
+                notepad.value = decodeURIComponent(match[2]);
+            }
+        }
+
+        function clearNotes() {
+            if (confirm("Are you sure you want to clear all notes?")) {
+                const notepad = document.getElementById('unifiedNotepad');
+                notepad.value = "";
+                document.cookie = "ent_portal_notes=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            }
+        }
+
+        // 4. Initialize on Page Load
+        $(document).ready(() => {
+            renderCompactCalendar();
+            loadNotesFromCookies();
+        });
+
+        // ################## End Notes and Calander ##################
+
+        // ########### Sweet Alert notifications ############
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+        // Primary Toaster (Your Office Accent)
+        function showPrimaryToast(msg) {
+            Toast.fire({
+                title: msg,
+                background: '#132589',
+                color: '#fff',
+                iconColor: '#fff',
+                icon: 'info'
+            });
+        }
+
+        // Secondary Toaster (Slate/Gray)
+        function showSecondaryToast(msg) {
+            Toast.fire({
+                title: msg,
+                background: '#64748b',
+                color: '#fff',
+                iconColor: '#fff',
+                icon: 'question'
+            });
+        }
+
+        // #################### End Sweet Alert Notifications
+    </script>
+</body>
+
+</html>
