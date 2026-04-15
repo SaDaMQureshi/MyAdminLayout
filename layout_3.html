@@ -399,6 +399,77 @@
             background: #e2e8f0;
             border-radius: 10px;
         }
+
+
+
+        /* CheckEditor */
+        /* Force CKEditor to follow your color pattern */
+        .ck-editor__animated-gradient {
+            display: none !important;
+            /* Keep it static per your preference */
+        }
+
+        .ck-editor__main>.ck-editor__editable {
+            min-height: 200px;
+            /* Set height */
+            border-color: var(--border-color) !important;
+            font-size: 0.9rem;
+            border-bottom-left-radius: 8px !important;
+            border-bottom-right-radius: 8px !important;
+            box-shadow: none !important;
+        }
+
+        .ck-toolbar {
+            border-top-left-radius: 8px !important;
+            border-top-right-radius: 8px !important;
+            border-color: var(--border-color) !important;
+            background-color: #f8fafc !important;
+            /* Light bg to match your icons */
+        }
+
+        /* Focus state */
+        .ck.ck-editor__main>.ck-editor__editable.ck-focused {
+            border-color: var(--office-accent) !important;
+            transition: border 0.2s ease-in-out;
+        }
+
+
+
+        /* Date Input CSS */
+        /* Styling the native browser date picker icon */
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            background: transparent;
+            bottom: 0;
+            color: transparent;
+            cursor: pointer;
+            height: auto;
+            left: 0;
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: auto;
+        }
+
+        /* Target the input group for focus states */
+        .custom-date-input:focus-within .input-group-text {
+            border-color: var(--office-accent) !important;
+            transition: border-color 0.2s ease;
+        }
+
+        .custom-date-input:focus-within input {
+            border-color: var(--office-accent) !important;
+            box-shadow: 0 0 0 3px rgba(19, 37, 137, 0.1) !important;
+        }
+
+        /* For mobile responsiveness and alignment */
+        .custom-date-input input {
+            position: relative;
+            border-radius: 0 8px 8px 0 !important;
+        }
+
+        .custom-date-input .input-group-text {
+            border-radius: 8px 0 0 8px !important;
+        }
     </style>
 </head>
 
@@ -1251,11 +1322,16 @@
                                 <option>Financial Analytics</option>
                             </select>
                         </div>
-
                         <div class="col-md-6">
                             <label class="form-label small fw-semibold text-dark">Joining Date</label>
-                            <input type="date" class="form-control shadow-none py-2"
-                                style="border-color: var(--border-color); font-size: 0.9rem;">
+                            <div class="input-group custom-date-input">
+                                <span class="input-group-text bg-light border-end-0"
+                                    style="border-color: var(--border-color);">
+                                    <i class="far fa-calendar-alt text-muted small"></i>
+                                </span>
+                                <input type="date" class="form-control shadow-none py-2 border-start-0"
+                                    style="border-color: var(--border-color); font-size: 0.9rem; cursor: pointer;">
+                            </div>
                         </div>
 
                         <div class="col-md-6">
@@ -1294,10 +1370,19 @@
                                 placeholder="Enter detailed notes here..."
                                 style="border-color: var(--border-color); font-size: 0.9rem;"></textarea>
                         </div>
+
+                        <div class="col-12">
+                            <label class="form-label small fw-semibold text-dark">Internal Remarks / Biography</label>
+                            <div id="editor-container" style="border-radius: 8px; overflow: hidden;">
+                                <div id="biography-editor">
+                                    <p>Enter detailed personnel notes and professional biography here...</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="mt-4 pt-3 border-top d-flex justify-content-end gap-2">
-                        <button type="button" class="btn btn-light px-4 py-2 fw-semibold"
+                        <button type="reset" class="btn btn-light px-4 py-2 fw-semibold"
                             style="border-radius: 8px; font-size: 0.85rem; border: 1px solid var(--border-color);">
                             Discard
                         </button>
@@ -1589,6 +1674,8 @@
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.0.0/classic/ckeditor.js"></script>
+
 
     <script>
         function toggleSidebar() { document.body.classList.toggle('sidebar-open'); }
@@ -1790,6 +1877,21 @@
         }
 
         // #################### End Sweet Alert Notifications
+
+
+        // CheckEditor Section JS
+        ClassicEditor
+            .create(document.querySelector('#biography-editor'), {
+                toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'insertTable', 'undo', 'redo'],
+                placeholder: 'Start typing biography...'
+            })
+            .then(editor => {
+                console.log('CKEditor Initialized');
+                // To get data on form submit: const data = editor.getData();
+            })
+            .catch(error => {
+                console.error(error);
+            });
     </script>
 </body>
 
